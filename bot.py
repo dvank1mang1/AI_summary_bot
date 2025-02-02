@@ -1,14 +1,13 @@
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+import os
 
-BOT_TOKEN = '8009392899:AAEgbsEom6hAksj6QIsvQboqq8XBLknpq60'
+BOT_TOKEN = os.getenv('BOT_TOKEN')
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handler for the /start command"""
     await update.message.reply_text('Hello! I am your new Telegram bot!')
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Echo the user message"""
     await update.message.reply_text(update.message.text)
 
 def main():
