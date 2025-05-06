@@ -1,2 +1,2 @@
 # AI_summary_bot
-TG bot for summarizing AI news using LLM
+TG bot for summarizing AI news using ML
