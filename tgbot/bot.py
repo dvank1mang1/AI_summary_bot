@@ -6,6 +6,9 @@ from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 from config import BOT_TOKEN
 from dotenv import load_dotenv
+from handlers import commands
+from aiogram.types import BotCommand
+from handlers.commands import router
 
 load_dotenv()
 
@@ -17,7 +20,15 @@ async def start_handler(message: types.Message):
     await message.answer("👋 Hello! I'm your AI news bot.")
 
 async def main():
-    # You’ll register handlers here later
+    commands = [
+        BotCommand(command="start", description="Start the bot"),
+        BotCommand(command="language", description="Change language"),
+        BotCommand(command="frequency", description="Change frequency of news"),
+    ]
+    await bot.set_my_commands(commands)
+
+
+    dp.include_router(router)
     print("Bot is working.")
     await dp.start_polling(bot)
 
