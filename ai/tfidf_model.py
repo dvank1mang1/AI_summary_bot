@@ -1,17 +1,23 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
 
-"What does this model do? Selects one article from each cluster based on TF-IDF and KMeans clustering."
-"Что делает эта модель? Выбирает по одной статье из каждого кластера на основе TF-IDF и KMeans кластеризации."
+"""
+What does this model do? 
+Selects one article from each cluster based on TF-IDF and KMeans clustering.
+"""
 
 def select_important(articles, n_clusters=3):
     if len(articles) == 0:
         return []
 
-    texts = [article.get('title', '') for article in articles]
+    # Replaced 'title' with 'text'
+    texts = [article.get('text', '') for article in articles]
 
-    if len(articles) < n_clusters:
-        return articles  #No need in clustering
+    # Filter empty texts
+    texts = [t for t in texts if len(t.split()) > 3]
+
+    if len(texts) < n_clusters:
+        return articles  # No need to clusterize
 
     vectorizer = TfidfVectorizer(stop_words='english')
     X = vectorizer.fit_transform(texts)
