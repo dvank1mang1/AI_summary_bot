@@ -38,7 +38,11 @@ MODEL_OPTIONS = {
     'zscore': zscore_filter
 }
 
+<<<<<<< HEAD
 MODELS_TO_USE = ['bayesian', 'fdr', 'logreg', 'tfidf', 'zscore']
+=======
+MODELS_TO_USE = ['fdr']
+>>>>>>> e3b98e796336880e4bc7b5d17e877bfa969b1d36
 
 
 def clean_text(text):
