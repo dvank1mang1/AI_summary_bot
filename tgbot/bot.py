@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 from handlers import commands
 from aiogram.types import BotCommand
 from handlers.commands import router
+from storage.user_preferences import get_user_language
+from i18n import t
 
 load_dotenv()
 
@@ -17,16 +19,31 @@ dp = Dispatcher()
 
 @dp.message(CommandStart())
 async def start_handler(message: types.Message):
-    await message.answer("👋 Hello! I'm your AI news bot.")
+    lang =get_user_language(message.from_user.id)
+    if lang not in ["ru", "en"]:
+        lang = "ru"
+
+    await message.answer(t(lang, "start_message"))
 
 async def main():
-    commands = [
-        BotCommand(command="start", description="Start the bot"),
-        BotCommand(command="language", description="Change language"),
-        BotCommand(command="frequency", description="Change frequency of news"),
-    ]
-    await bot.set_my_commands(commands)
 
+    await bot.set_my_description(
+        description=t("ru", "bot_description"),
+        language_code="ru"
+    )
+    await bot.set_my_description(
+        description=t("en", "bot_description"),
+        language_code="en"
+    )
+
+    await bot.set_my_short_description(
+        short_description=t("ru", "bot_short"),
+        language_code="ru"
+    )
+    await bot.set_my_short_description(
+        short_description=t("en", "bot_short"),
+        language_code="en"
+    )
 
     dp.include_router(router)
     print("Bot is working.")
