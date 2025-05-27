@@ -9,6 +9,7 @@ from ai.fdr_model import select_important as fdr_filter
 from ai.logreg_model import select_important as logreg_filter
 from ai.tfidf_model import select_important as tfidf_filter
 from ai.zscore_model import select_important as zscore_filter
+import json
 
 load_dotenv()
 
@@ -38,11 +39,7 @@ MODEL_OPTIONS = {
     'zscore': zscore_filter
 }
 
-<<<<<<< HEAD
 MODELS_TO_USE = ['bayesian', 'fdr', 'logreg', 'tfidf', 'zscore']
-=======
-MODELS_TO_USE = ['fdr']
->>>>>>> e3b98e796336880e4bc7b5d17e877bfa969b1d36
 
 
 def clean_text(text):
@@ -98,24 +95,19 @@ def filter_articles(articles):
     """
     Filter articles based on multiple models and perform majority voting.
     """
-    # Remove articles without text
     articles = [a for a in articles if a['text']]
     if not articles:
         print("All articles are empty or consist of stop-words!")
         return []
 
-    # Log distribution of articles across channels
     print("=== Channel distribution before filtering ===")
     channel_counts = Counter(a['channel'] for a in articles)
-
     for channel, count in channel_counts.items():
         print(f"{channel}: {count} articles")
 
-    # Initialize containers
     filtered_results = {}
     model_votes = Counter()
 
-    # Run articles through each model
     for model_name in MODELS_TO_USE:
         model = MODEL_OPTIONS.get(model_name)
         if model:
@@ -126,24 +118,31 @@ def filter_articles(articles):
                 print(f"Model {model_name} did not return any articles.")
             else:
                 print(f"Model {model_name} returned {len(filtered)} articles.")
-            
-            # Store results and update votes
+
             filtered_results[model_name] = filtered
 
-            # Display selected articles per model
             print(f"\n=== Articles selected by {model_name} ===")
             for article in filtered:
                 print(f"[{article['date']}] {article['channel']}: {article['text'][:50]}... — {article['url']}")
                 model_votes[article['url']] += 1
 
-    # Define majority threshold (ceil to include the majority)
     majority_vote_threshold = (len(MODELS_TO_USE) // 2) + 1
     print(f"\nMajority vote threshold: {majority_vote_threshold}")
 
-    # Select articles that appeared in the majority of models
     final_selection = [article for article in articles if model_votes[article['url']] >= majority_vote_threshold]
 
     print(f"\nFinal selected articles by majority vote: {len(final_selection)}")
+
+    # Convert datetime to ISO format before JSON serialization
+    for article in final_selection:
+        if isinstance(article.get("date"), (str, type(None))):
+            continue
+        article["date"] = article["date"].isoformat()
+
+    # Save to JSON
+    with open("articles.json", "w", encoding="utf-8") as f:
+        json.dump(final_selection, f, ensure_ascii=False, indent=2)
+
     return final_selection
 
 
@@ -154,6 +153,7 @@ async def main():
     print("\n=== Final Articles ===")
     for article in filtered:
         print(f"[{article['date']}] {article['channel']}: {article['text'][:50]}... — {article['url']}")
+
 
 if __name__ == "__main__":
     asyncio.run(main())
