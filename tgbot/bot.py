@@ -1,5 +1,7 @@
 import asyncio
 import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from aiogram.filters import CommandStart
 from aiogram import Bot, Dispatcher,types
 from aiogram.enums import ParseMode
@@ -11,6 +13,10 @@ from aiogram.types import BotCommand
 from handlers.commands import router
 from storage.user_preferences import get_user_language
 from i18n import t
+from scheduler import start_scheduler
+from storage.user_preferences import get_all_user_ids
+
+
 
 load_dotenv()
 
@@ -47,7 +53,11 @@ async def main():
 
     dp.include_router(router)
     print("Bot is working.")
+
+    start_scheduler(bot) 
+
     await dp.start_polling(bot)
+
 
 if __name__ == "__main__":
     asyncio.run(main())

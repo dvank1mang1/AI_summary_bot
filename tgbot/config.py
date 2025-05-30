@@ -5,6 +5,6 @@ load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
-DEFAULT_LANGUAGE = "en"
+DEFAULT_LANGUAGE = "ru"
 DEFAULT_FREQ = "daily"
 DEFAULT_SIZE = "medium"
