@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv() 
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
 DEFAULT_LANGUAGE = "ru"
 DEFAULT_FREQ = "daily"
