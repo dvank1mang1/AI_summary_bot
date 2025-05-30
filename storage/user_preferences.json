@@ -4,5 +4,11 @@
     "frequency": "semiweekly",
     "size": "extended",
     "last_sent": null
+  },
+  "603830660": {
+    "language": "en",
+    "frequency": "daily",
+    "size": "extended",
+    "last_sent": null
   }
 }

@@ -2,60 +2,46 @@ import asyncio
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from aiogram.filters import CommandStart
-from aiogram import Bot, Dispatcher,types
-from aiogram.enums import ParseMode
+
+from aiogram import Bot, Dispatcher, types
 from aiogram.client.default import DefaultBotProperties
-from config import BOT_TOKEN
-from dotenv import load_dotenv
-from handlers import commands
+from aiogram.enums import ParseMode
+from aiogram.filters import CommandStart
 from aiogram.types import BotCommand
-from handlers.commands import router
-from storage.user_preferences import get_user_language
+
+from dotenv import load_dotenv
+from config import BOT_TOKEN
 from i18n import t
+from storage.user_preferences import get_user_language, get_all_user_ids
 from scheduler import start_scheduler
-from storage.user_preferences import get_all_user_ids
 
-
+from handlers.commands import router as commands_router
+from handlers.news_sender import router as news_router
 
 load_dotenv()
 
-bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+bot = Bot(token=BOT_TOKEN,
+          default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher()
+
 
 @dp.message(CommandStart())
 async def start_handler(message: types.Message):
-    lang =get_user_language(message.from_user.id)
-    if lang not in ["ru", "en"]:
-        lang = "ru"
-
+    lang = get_user_language(message.from_user.id) or "ru"
     await message.answer(t(lang, "start_message"))
 
+
 async def main():
+    await bot.set_my_description(t("ru", "bot_description"), "ru")
+    await bot.set_my_description(t("en", "bot_description"), "en")
+    await bot.set_my_short_description(t("ru", "bot_short"), "ru")
+    await bot.set_my_short_description(t("en", "bot_short"), "en")
+    dp.include_router(commands_router)
+    dp.include_router(news_router)
 
-    await bot.set_my_description(
-        description=t("ru", "bot_description"),
-        language_code="ru"
-    )
-    await bot.set_my_description(
-        description=t("en", "bot_description"),
-        language_code="en"
-    )
-
-    await bot.set_my_short_description(
-        short_description=t("ru", "bot_short"),
-        language_code="ru"
-    )
-    await bot.set_my_short_description(
-        short_description=t("en", "bot_short"),
-        language_code="en"
-    )
-
-    dp.include_router(router)
     print("Bot is working.")
 
-    start_scheduler(bot) 
-
+    start_scheduler(bot)
     await dp.start_polling(bot)
 
 
