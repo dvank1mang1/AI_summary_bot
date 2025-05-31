@@ -39,3 +39,8 @@ async def serpapi_search(query: str, limit: int = 3):
     return await loop.run_in_executor(
         None, functools.partial(_search_sync, query, limit)
     )
+
+def format_snippets(results):
+    return "\n".join(
+        f"{i+1}. {title} — {snippet}" for i, (title, link, snippet) in enumerate(results)
+    )

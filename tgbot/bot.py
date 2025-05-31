@@ -16,7 +16,6 @@ from storage.user_preferences import get_user_language, get_all_user_ids
 from scheduler import start_scheduler
 
 from handlers.commands import router as commands_router
-from handlers.news_sender import router as news_router
 
 load_dotenv()
 
@@ -37,11 +36,11 @@ async def main():
     await bot.set_my_short_description(t("ru", "bot_short"), "ru")
     await bot.set_my_short_description(t("en", "bot_short"), "en")
     dp.include_router(commands_router)
-    dp.include_router(news_router)
 
     print("Bot is working.")
 
     start_scheduler(bot)
+
     await dp.start_polling(bot)
 
 
