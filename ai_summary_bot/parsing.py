@@ -108,5 +108,18 @@ async def collect_articles(limit_per_channel: int = 30,
     outfile.write_text(json.dumps(selected, ensure_ascii=False, indent=2), "utf-8")
     return outfile
 
+
+def get_articles(since: datetime) -> list[dict]:
+    if not os.path.exists("articles.json"):
+        return []
+
+    with open("articles.json", "r", encoding="utf-8") as f:
+        articles = json.load(f)
+
+    if since:
+        articles = [a for a in articles if a.get("date") >= since.isoformat()]
+
+    return articles
+
 if __name__ == "__main__":
     asyncio.run(collect_articles())
