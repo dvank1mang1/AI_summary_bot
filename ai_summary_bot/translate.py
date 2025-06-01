@@ -40,20 +40,11 @@ def _gpt_polish(text: str, lang: str) -> str:
         logger.warning("GPT polish failed: %s", e)
         return text
 
-
-def translation(text: str, target_lang: str = "ru") -> str:
+async def translation(text: str, target_lang: str) -> str:
     if not text or target_lang not in ("ru", "en"):
         return text
 
-    try:
-        detected = translator.detect(text).lang
-    except Exception as e:
-        logger.warning("googletrans.detect failed: %s", e)
-        detected = "unknown"
+    result = await translator.translate(text, dest=target_lang)
+    text = result.text
 
-    if detected != target_lang and detected != "unknown":
-        try:
-            text = translator.translate(text, dest=target_lang).text
-        except Exception as e:
-            logger.warning("googletrans.translate failed: %s", e)
     return _gpt_polish(text, target_lang)

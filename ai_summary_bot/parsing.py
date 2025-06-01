@@ -57,10 +57,15 @@ async def _fetch(client: TelegramClient, limit: int = 30) -> List[Dict[str, Any]
             batch: list[dict[str, Any]] = []
             async for m in client.iter_messages(ch, limit=limit):
                 if m.text and len(m.text.strip()) > 5:
+                    first_line = msg.text.strip().split("\n")[0]
+                    if len(first_line) > 100:
+                        first_line = first_line[:100].rsplit(" ",1)[0] + "..."
+                    title = first_line
                     batch.append(
                         {
                             "channel": ch,
                             "message_id": m.id,
+                            "title": title,
                             "text": _clean(m.text),
                             "date": m.date,
                             "url": f"https://t.me/{ch[1:]}/{m.id}",

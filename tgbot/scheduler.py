@@ -9,7 +9,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from ai_summary_bot.parsing import collect_articles
 from handlers.news_sender import send_news_to_user
-from storage.user_preferences import get_user_frequency, get_user_size, get_all_user_ids, get_last_sent, set_last_sent
+from storage.user_preferences import get_user_frequency, get_all_user_ids, get_last_sent, set_last_sent
 from ai_summary_bot.search import serpapi_search, format_snippets
 from ai_summary_bot.parsing import get_articles
 
@@ -45,22 +45,15 @@ async def check_and_send(bot):
     now = datetime.utcnow()
     user_ids = get_all_user_ids()
 
+
     for user_id in user_ids:
         freq = get_user_frequency(user_id)
-        size = get_user_size(user_id)
         last_time = get_last_sent(user_id) or (now - timedelta(days=10))
 
         if is_due(freq, now, last_time):
             articles = get_articles(since=last_time)
 
             for article in articles:
-                if size == "extended":
-                    serp_results = await serpapi_search(article["title"])
-                    formatted_context = format_snippets(serp_results)
-                    article["external_context"] = formatted_context
-                else:
-                    article["external_context"] = None
-
                 await send_news_to_user(bot, user_id, article)
 
             set_last_sent(user_id, now)
