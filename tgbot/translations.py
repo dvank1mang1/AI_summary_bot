@@ -21,6 +21,7 @@ translations = {
         "bot_description": "📰 I'm an AI bot that sends you the best news at the right time.",
         "bot_short": "AI bot for summarized news",
         "more": "More",
+        "title": "📰 News",
         
         
         # menu
@@ -51,6 +52,7 @@ translations = {
         "bot_description": "📰 Я — AI-бот, который присылает тебе лучшие новости в нужное время.",
         "bot_short": "AI-бот для кратких новостей",
         "more": "Узнать больше",
+        "title": "📰 Новости",
 
         # menu
         "cmd_start": "Запустить бота",
