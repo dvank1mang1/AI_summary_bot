@@ -140,7 +140,8 @@ async def handle_more_callback(cq: types.CallbackQuery):
         title = title_translated,
         summary = body_translated,
         source = url,
-        time = date
+        time = date,
+        user_id=user_id
     )
     clean = sanitize_html(formatted_extend)
 

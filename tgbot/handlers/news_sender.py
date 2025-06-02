@@ -45,7 +45,8 @@ async def send_news_to_user(bot: Bot, user_id: int, article: dict):
         title=translated_title,
         summary=translated_summary,
         source=article.get("url", ""),
-        time=article.get("date", "")
+        time=article.get("date", ""),
+        user_id=user_id
     )
 
     formatted_message = sanitize_html(formatted_message)
