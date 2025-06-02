@@ -15,7 +15,8 @@ from i18n import t
 from storage.user_preferences import get_user_language, get_all_user_ids
 from scheduler import start_scheduler
 from handlers.commands import router as commands_router
-from handlers.news_sender import handle_more_callback
+from handlers.commands import handle_more_callback
+
 
 
 load_dotenv()

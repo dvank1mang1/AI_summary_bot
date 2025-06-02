@@ -10,6 +10,7 @@ from typing import Any, Dict, List
 
 from dotenv import load_dotenv
 from telethon import TelegramClient
+from datetime import datetime
 load_dotenv()
 
 API_ID: int = int(os.getenv("TG_API_ID", "0"))

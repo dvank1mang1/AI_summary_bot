@@ -4,6 +4,7 @@ import json
 from datetime import datetime, timedelta
 from pathlib import Path
 import asyncio
+from aiogram import Bot
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
@@ -52,8 +53,8 @@ async def check_and_send(bot):
 
         if is_due(freq, now, last_time):
             articles = get_articles(since=last_time)
-
             for article in articles:
+                article["external_context"] = None
                 await send_news_to_user(bot, user_id, article)
 
             set_last_sent(user_id, now)

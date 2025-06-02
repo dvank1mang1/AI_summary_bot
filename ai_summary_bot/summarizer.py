@@ -22,7 +22,7 @@ async def summarize_with_gpt(base_text: str, size: str, additional_context: str 
             f"{base_text}\n\n"
             "Additional external information:\n"
             f"{additional_context}\n\n"
-            "Generate a detailed, informative summary that integrates both the article and external information. "
+            "Generate a detailed, informative summary that integrates both the article and external information. But not use phrases like 'Brief content' and others "
             "Keep it clear, structured, and easy to read."
         )
     else:
