@@ -104,7 +104,7 @@ async def handle_more_callback(cq: types.CallbackQuery):
     bot = cq.bot
     data = cq.data
     if not data.startswith("more:"):
-        await callback.answer()
+        await cq.answer()
         return
 
     url = data.split(":", 1)[1]

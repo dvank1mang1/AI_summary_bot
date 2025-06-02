@@ -48,7 +48,6 @@ def _clean(text: str) -> str:
     text = re.sub(r"[\W_]+", " ", text)
     return text.strip()
 
-
 async def _fetch(client: TelegramClient, limit: int = 30) -> List[Dict[str, Any]]:
     all_articles: list[dict[str, Any]] = []
     ok, fail = 0, 0
@@ -58,9 +57,9 @@ async def _fetch(client: TelegramClient, limit: int = 30) -> List[Dict[str, Any]
             batch: list[dict[str, Any]] = []
             async for m in client.iter_messages(ch, limit=limit):
                 if m.text and len(m.text.strip()) > 5:
-                    first_line = msg.text.strip().split("\n")[0]
-                    if len(first_line) > 100:
-                        first_line = first_line[:100].rsplit(" ",1)[0] + "..."
+                    first_line = m.text.strip().split("\n")[0]
+                    if len(first_line) > 200:
+                        first_line = first_line[:200].rsplit(" ",1)[0] + "..."
                     title = first_line
                     batch.append(
                         {
