@@ -24,7 +24,7 @@ def start_scheduler(bot):
     scheduler.add_job(
         check_and_send,             
         "interval",
-        minutes=1,
+        hours = 1,
         args=[bot],                 
         id="check_and_send_job"
     )
