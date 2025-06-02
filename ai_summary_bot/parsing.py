@@ -7,10 +7,11 @@ import re
 from collections import Counter
 from pathlib import Path
 from typing import Any, Dict, List
+from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
 from telethon import TelegramClient
-from datetime import datetime
+
 load_dotenv()
 
 API_ID: int = int(os.getenv("TG_API_ID", "0"))
@@ -25,6 +26,8 @@ CHANNELS: list[str] = [
     "@seeallochnaya",
     "@ai_newz",
     "@Artificial_intelligence_in",
+    "@ftsec",
+    "@Castalia_Ai",
 ]
 
 from ai.bayesian_model import select_important as bayesian_filter
@@ -59,7 +62,7 @@ async def _fetch(client: TelegramClient, limit: int = 30) -> List[Dict[str, Any]
                 if m.text and len(m.text.strip()) > 5:
                     first_line = m.text.strip().split("\n")[0]
                     if len(first_line) > 200:
-                        first_line = first_line[:200].rsplit(" ",1)[0] + "..."
+                        first_line = first_line[:200].rsplit(" ", 1)[0] + "..."
                     title = first_line
                     batch.append(
                         {
@@ -81,9 +84,18 @@ async def _fetch(client: TelegramClient, limit: int = 30) -> List[Dict[str, Any]
     print(f"Fetched from {ok} channels (errors: {fail})")
     return all_articles
 
-
 def _filter(articles: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    articles = [a for a in articles if a["text"]]
+    current_time = datetime.utcnow()
+
+    print(f"Всего статей до фильтрации: {len(articles)}")
+
+    articles = [
+        a for a in articles 
+        if (current_time - (datetime.fromisoformat(a["date"]).replace(tzinfo=None) if isinstance(a["date"], str) else a["date"].replace(tzinfo=None))).days <= 1
+    ]
+    
+    print(f"Статей после фильтрации старше одного дня: {len(articles)}")
+
     if not articles:
         return []
 
@@ -95,6 +107,7 @@ def _filter(articles: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
     threshold = len(MODELS_TO_USE) // 2 + 1
     final = [a for a in articles if votes[a["url"]] >= threshold]
+    print(f"Статей после фильтрации моделями: {len(final)}")
 
     for a in final:
         if hasattr(a["date"], "isoformat"):
@@ -112,7 +125,6 @@ async def collect_articles(limit_per_channel: int = 30,
     outfile = Path(outfile)
     outfile.write_text(json.dumps(selected, ensure_ascii=False, indent=2), "utf-8")
     return outfile
-
 
 def get_articles(since: datetime) -> list[dict]:
     if not os.path.exists("articles.json"):

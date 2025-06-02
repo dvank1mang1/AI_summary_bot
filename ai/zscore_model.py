@@ -9,7 +9,7 @@ def compute_z_score(x: float, mean: float, std: float) -> float:
     return (x - mean) / std
 
 
-def select_important(articles, threshold: float = 1.96):
+def select_important(articles, threshold: float = 1.5):
     """
     Select important articles based on Z-Score of text length.
     Only articles with Z-Score > threshold are returned.

@@ -7,11 +7,7 @@ def bayesian_importance(prior: float, likelihood: float, evidence: float) -> flo
         return 0.0
     return (likelihood * prior) / evidence
 
-
-def select_important(articles, threshold: float = 0.574):
-    """
-    Selects important articles based on Bayesian inference.
-    """
+def select_important(articles, threshold: float = 0.5):
     prior = 0.5  # Base probability that an article is important
     evidence = 1.0  # Simplified assumption
     
@@ -21,20 +17,20 @@ def select_important(articles, threshold: float = 0.574):
     for article in articles:
         word_count = len(article['text'].split())
 
-        # Ignore very short articles
-        if word_count < 20:
+        # Ignore very short articles with a lower threshold
+        if word_count < 15:
             continue
 
         # Calculate base likelihood
-        likelihood = min(word_count / 150, 1.0)  # Smoother normalization
+        likelihood = min(word_count / 100, 1.0)
 
         # Boost for keywords, but with diminishing returns
         keyword_count = sum(article['text'].count(kw) for kw in keywords)
         
         # Adjust likelihood based on keyword occurrence (capped at 0.2)
-        likelihood += 0.03 * min(keyword_count, 5)
+        likelihood += 0.02 * min(keyword_count, 5)
 
-        # Compute the posterior
+        # Compute the posterior using the bayesian_importance function
         posterior = bayesian_importance(prior, likelihood, evidence)
 
         if posterior > threshold:

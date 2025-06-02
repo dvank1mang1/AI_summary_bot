@@ -27,7 +27,7 @@ def extract_features(article):
     return [title_length, mentions, word_count]
 
 
-def select_important(articles, threshold=0.8):
+def select_important(articles, threshold=0.6):
     """
     Select important articles using Logistic Regression with a high probability threshold and softened penalties.
     """
@@ -42,11 +42,11 @@ def select_important(articles, threshold=0.8):
         # Soft penalty for missing keywords
         keywords = ["AI", "GPT", "OpenAI", "Machine Learning", "Deep Learning"]
         if not any(kw in article.get("text", "") for kw in keywords):
-            prob *= 0.75  # Soft penalty for missing keywords
+            prob *= 0.85  # Soft penalty for missing keywords
         
         # Soft penalty for articles with low mention count
         if article.get("mention_count", 1) < 3:  # Threshold for mentions
-            prob *= 0.8  # Soft penalty for low mentions
+            prob *= 0.9  # Soft penalty for low mentions
         
         print(f"Adjusted probability: {prob:.4f}")
 

@@ -11,19 +11,19 @@ def compute_pvalues(articles):
     
     # Compute mean and std deviation
     mean_count = np.mean(word_counts)
-    std_count = np.std(word_counts) + 1e-8  # To avoid division by zero
+    std_count = np.std(word_counts) + 1e-4  # To avoid division by zero
 
     for word_count in word_counts:
         # Z-score calculation
         z_score = (word_count - mean_count) / std_count
         # Convert to p-value using normal distribution (1 - CDF)
-        pvalue = 1 - (0.5 * (1 + erf(z_score / np.sqrt(2))))
+        pvalue = 1 - (0.5 * (1 + erf(z_score / np.sqrt(3))))
         pvalues.append(pvalue)
 
     return pvalues
 
 
-def select_important(articles, alpha=0.1):
+def select_important(articles, alpha=0.2):
     """
     Selects important articles using FDR (False Discovery Rate) method.
     """
