@@ -18,7 +18,6 @@ def _get_user(user_id):
         user_data[user_id] = {
         "language": "ru", 
         "frequency": "daily",
-        "size": "normal",
         "last_sent": None
         }
     return user_data[user_id]
@@ -45,15 +44,6 @@ def set_user_frequency(user_id: int, frequency: str):
 
 def get_user_frequency(user_id: int) -> str:
     return _get_user(user_id)["frequency"]
-
-
-#user size
-def set_user_size(user_id: int, size: str):
-    _get_user(user_id)["size"] = size
-    _save()
-
-def get_user_size(user_id: int) -> str:
-    return _get_user(user_id)["size"]
 
 
 #user last sent
